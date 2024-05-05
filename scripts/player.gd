@@ -10,6 +10,7 @@ const JUMP_VELOCITY = -300.0
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
+var is_rolling = false 
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -29,20 +30,26 @@ func _physics_process(delta):
 	elif direction < 0 :
 		animated_sprite_2d.flip_h = true
 	
+	#Roll
+	if Input.is_action_pressed("roll") and is_on_floor():
+		is_rolling=true
+	else:
+		is_rolling=false	
 	#Play animations
 	if is_on_floor():
 		if direction == 0:
 			animated_sprite_2d.play("idle")
+		elif is_rolling:
+			animated_sprite_2d.play("roll")
 		else:
 			animated_sprite_2d.play("run")	
 	else:
-		animated_sprite_2d.play("jump")		
-
-	
-	# Apply movement
+		animated_sprite_2d.play("jump")			
+		
+		# Apply movement
 	if direction:
 		velocity.x = direction * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
-
+		
 	move_and_slide()
