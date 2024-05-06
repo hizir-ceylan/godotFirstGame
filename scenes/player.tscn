@@ -1,7 +1,8 @@
-[gd_scene load_steps=34 format=3 uid="uid://bhrsj27cad0r7"]
+[gd_scene load_steps=38 format=3 uid="uid://bhrsj27cad0r7"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_3sqkw"]
 [ext_resource type="Texture2D" uid="uid://c2bo20lo2egph" path="res://assets/sprites/knight.png" id="1_qdu6d"]
+[ext_resource type="AudioStream" uid="uid://dsqgnvetm5km8" path="res://assets/sounds/jump.wav" id="3_b17qe"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tshr8"]
 atlas = ExtResource("1_qdu6d")
@@ -232,6 +233,67 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_qvbko"]
 radius = 5.0
 
+[sub_resource type="Animation" id="Animation_7l5mk"]
+resource_name = "jump"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"jump"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("jump:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_savji"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"jump"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("jump:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ht1pg"]
+_data = {
+"RESET": SubResource("Animation_savji"),
+"jump": SubResource("Animation_7l5mk")
+}
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_3sqkw")
@@ -240,9 +302,18 @@ script = ExtResource("1_3sqkw")
 z_index = 5
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_lbteh")
-animation = &"roll"
+animation = &"jump"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -5)
 shape = SubResource("CircleShape2D_qvbko")
+
+[node name="jump" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_b17qe")
+bus = &"SFX"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_ht1pg")
+}
